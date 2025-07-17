@@ -53,6 +53,8 @@ containerd.io docker-buildx-plugin docker-compose-plugin -y
 ```bash
 sudo docker run hello-world
 ```
+- Example Output
+- <img width="796" height="576" alt="Image" src="https://github.com/user-attachments/assets/c1377aa3-430a-494d-bf9b-ee87dacb909c" />
 
 ## Step 4: Installing Caddy for Automatic HTTPS
 - Install Caddy:
