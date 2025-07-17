@@ -3,6 +3,11 @@
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y
 ```
+- Set time
+``bash
+sudo timedatectl set-timezone Asia/Bangkok
+timedatectl
+```
 # Reboot!
 
 ## Step 2: Install and Configure UFW Firewall
@@ -59,7 +64,7 @@ sudo docker run hello-world
 ## Step 4: Installing Caddy for Automatic HTTPS
 - Install Caddy:
 ```bash
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
+sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl tcpdump
 
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
 | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
@@ -72,6 +77,7 @@ sudo apt install caddy -y
 ```
 - Edit the Caddyfile configuration file:
 ```bash
+sudo mv /etc/caddy/Caddyfile /etc/caddy/Caddyfile.orig
 sudo vi /etc/caddy/Caddyfile
 ```
 - Enter your domain and configure reverse proxy. Replace "yourdomain.com" with your actual domain name:
