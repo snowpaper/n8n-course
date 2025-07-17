@@ -159,6 +159,10 @@ sudo docker compose up -d
 ```bash
 sudo docker logs --tail=50 n8n
 ```
+- Check Database
+```bash
+sudo docker exec -it n8n env | grep DB_TYPE
+```
 
 ## Step 6: Accessing Your Self-Hosted n8n Instance
 Visit your domain in any web browser. Your n8n instance should now load successfully at https://yourdomain.com. Follow the setup steps in the interface to complete your initial setup.
