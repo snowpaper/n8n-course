@@ -1,8 +1,7 @@
 # Install n8n docker on Ubuntu Server!
 ## Step 1: Update Your Server
 ```bash
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt-get update && sudo apt-get upgrade -y
 ```
 # Reboot!
 
