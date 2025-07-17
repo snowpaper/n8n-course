@@ -98,26 +98,14 @@ yourdomain.com {
     reverse_proxy localhost:5678
 }
 ```
-- If no domain yet, use this temporarily, but need to edit n8n "env" for N8N_SECURE_COOKIE=false
-```bash
-:80 {
-    reverse_proxy localhost:5678
-}
-```
 - Restart Caddy
 ```bash
 sudo systemctl restart caddy
 ```
 
 ## Step 5: Installing Caddy for Automatic HTTPS
-### Easy start
-```bash
-sudo docker volume create n8n_data
 
-sudo docker run -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
-```
-
-### Clean step
+### Run Database with PostgreSQL
 ```bash
 mkdir ~/n8n-docker
 cd ~/n8n-docker
