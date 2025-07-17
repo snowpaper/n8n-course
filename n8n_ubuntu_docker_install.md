@@ -61,6 +61,12 @@ sudo docker run hello-world
 - Example Output
 - <img width="796" height="576" alt="Image" src="https://github.com/user-attachments/assets/c1377aa3-430a-494d-bf9b-ee87dacb909c" />
 
+- Configure Docker to start on boot with systemd
+```bash
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+```
+
 ## Step 4: Installing Caddy for Automatic HTTPS
 - Install Caddy:
 ```bash
@@ -86,7 +92,13 @@ yourdomain.com {
     reverse_proxy localhost:5678
 }
 ```
-- If no domain yet, use this temporarily:
+- For port 443
+```bash
+:80 {
+    reverse_proxy localhost:5678
+}
+```
+- If no domain yet, use this temporarily, but need to edit n8n "env" for N8N_SECURE_COOKIE=false
 ```bash
 :80 {
     reverse_proxy localhost:5678
@@ -98,35 +110,64 @@ sudo systemctl restart caddy
 ```
 
 ## Step 5: Installing Caddy for Automatic HTTPS
+### Easy start
 ```bash
-mkdir ~/n8n
-cd ~/n8n
+sudo docker volume create n8n_data
+
+sudo docker run -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
 ```
-- Create docker-compose.yml with the following content:
+
+### Clean step
+```bash
+mkdir ~/n8n-docker
+cd ~/n8n-docker
+```
+- Create `docker-compose.yml` with the following content:
 ```bash
 services:
   n8n:
-    image: docker.io/n8nio/n8n:latest
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
     restart: always
     ports:
       - "5678:5678"
     volumes:
       - n8n_data:/home/node/.n8n
+    environment:
+      - TZ=Asia/Bangkok
+      - GENERIC_TIMEZONE=Asia/Bangkok
+      - N8N_RUNNERS_ENABLED=true
 
 volumes:
   n8n_data:
 ```
 - Now deploy n8n by running Docker compose:
-```
+```bash
 sudo docker compose up -d
+```
+- Viewing Log `sudo docker logs --tail=50 <container_name>`
+```bash
+sudo docker logs --tail=50 n8n
 ```
 
 ## Step 6: Accessing Your Self-Hosted n8n Instance
 Visit your domain in any web browser. Your n8n instance should now load successfully at https://yourdomain.com. Follow the setup steps in the interface to complete your initial setup.
+
+https://<my-ip>
+or
+http://<my-ip or localhost>:5678
 
 # Updating your n8n Installation
 ```bash
 sudo docker compose pull
 sudo docker compose up -d
 ```
+
+# Maintenace
+- Check status ```sudo docker ps```
+- Shutdown Container ```sudo docker stop <container_name>```
+- Start Container ```sudo docker start <container_name>```
+- Restart Container ```sudo docker restart <container_name>```
+- Viewing Log ```sudo docker logs --tail=50 <container_name>```
+- Remove container ```sudo docker rm <container_name>```
 
