@@ -125,21 +125,40 @@ cd ~/n8n-docker
 - Create `docker-compose.yml` with the following content:
 ```bash
 services:
+  postgres:
+    image: postgres:15.5
+    container_name: n8n_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8npass
+      POSTGRES_DB: n8ndb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   n8n:
     image: docker.n8n.io/n8nio/n8n
     container_name: n8n
     restart: always
     ports:
       - "5678:5678"
-    volumes:
-      - n8n_data:/home/node/.n8n
     environment:
       - TZ=Asia/Bangkok
-      - GENERIC_TIMEZONE=Asia/Bangkok
-      - N8N_RUNNERS_ENABLED=true
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8ndb
+      - DB_POSTGRESDB_USER=n8n # Same as POSTGRES_USER
+      - DB_POSTGRESDB_PASSWORD=n8npass # Same as POSTGRES_PASSWORD
+      - N8N_ENCRYPTION_KEY=supersecretkey123
+    volumes:
+      - /opt/n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
 
 volumes:
-  n8n_data:
+  pgdata:
+    name: n8n_pgdata
 ```
 - Now deploy n8n by running Docker compose:
 ```bash
@@ -166,8 +185,40 @@ sudo docker compose up -d
 # Maintenace
 - Check status ```sudo docker ps```
 - Shutdown Container ```sudo docker stop <container_name>```
-- Start Container ```sudo docker start <container_name>```
+- Start Container ```sudo docker run --name=<container_name>```
 - Restart Container ```sudo docker restart <container_name>```
 - Viewing Log ```sudo docker logs --tail=50 <container_name>```
 - Remove container ```sudo docker rm <container_name>```
 
+# Auto-Update
+- Install tool
+```bash
+sudo apt install moreutils -y
+```
+- Create file
+```bash
+vi /home/n8n/n8n-docker/n8n-update.log
+```
+- Add Below:
+```bash
+#!/bin/bash
+
+LOG_FILE="/home/n8n/n8n-docker/n8n-update.log"
+COMPOSE_FILE="/home/n8n/n8n-docker/docker-compose.yml"
+
+sudo bash -c "
+  {
+    echo \"===== n8n update started =====\"
+    docker compose -f $COMPOSE_FILE pull
+    docker compose -f $COMPOSE_FILE up -d
+
+    VERSION=\$(docker exec \$(docker ps -qf \"ancestor=docker.n8n.io/n8nio/n8n\") n8n --version 2>/dev/null)
+    echo \"n8n version: \$VERSION\"
+    echo \"===== update finished =====\"
+  } 2>&1 | /usr/bin/ts '[%Y-%m-%d %H:%M:%S]' >> $LOG_FILE
+"
+```
+- Create cron `crontab -e` for update every sunday 00:00
+```bash
+0 0 * * 0 /home/n8n/n8n-docker/update-n8n.sh
+```
