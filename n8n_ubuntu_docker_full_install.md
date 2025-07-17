@@ -109,6 +109,9 @@ sudo systemctl restart caddy
 ```bash
 mkdir ~/n8n-docker
 cd ~/n8n-docker
+mkdir /opt/n8n_data
+chown n8n:n8n -R /opt/n8n_data
+chmod 710 -R /opt/n8n_data
 ```
 - Create `docker-compose.yml` with the following content:
 ```bash
