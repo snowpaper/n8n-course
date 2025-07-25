@@ -89,12 +89,14 @@ sudo vi /etc/caddy/Caddyfile
 - Enter your domain and configure reverse proxy. Replace "yourdomain.com" with your actual domain name:
 ```bash
 yourdomain.com {
+    tls internal
     reverse_proxy localhost:5678
 }
 ```
 - For port 443
 ```bash
 10.1.200.20 {
+    tls internal
     reverse_proxy localhost:5678
 }
 ```
