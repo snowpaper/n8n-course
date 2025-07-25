@@ -137,6 +137,7 @@ services:
       - TZ=Asia/Bangkok
       - GENERIC_TIMEZONE=Asia/Bangkok
       - N8N_RUNNERS_ENABLED=true
+      - N8N_SECURE_COOKIE=false
 
 volumes:
   n8n_data:
