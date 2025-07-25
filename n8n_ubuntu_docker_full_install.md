@@ -94,9 +94,10 @@ yourdomain.com {
 ```
 - For port 443
 ```bash
-:80 {
+10.1.200.20 {
     reverse_proxy localhost:5678
 }
+
 ```
 - Restart Caddy
 ```bash
