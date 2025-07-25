@@ -4,7 +4,7 @@
 sudo apt-get update && sudo apt-get upgrade -y
 ```
 - Set time
-``bash
+```bash
 sudo timedatectl set-timezone Asia/Bangkok
 timedatectl
 ```
